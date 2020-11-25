@@ -40,9 +40,10 @@ fi
 
 echo "Installing additional software..."
 sudo apt install -y numlockx pcmanfm
-sudo apt install -y dunst udiskie rsync dnsutils
+sudo apt install -y dunst libnotify-bin udiskie rsync dnsutils
 sudo apt install -y feh suckless-tools rofi scrot
 sudo apt install -y thunderbird libreoffice
+sudo apt install -y zathura zathura-pdf-poppler
 sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
 sudo systemctl disable --now mpd
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+# I need to add option to install nvidia drivers
 
 sudo apt update
 
@@ -74,14 +75,20 @@ fi
 
 echo "Installing work software..."
 sudo apt install -y nginx php-fpm mariadb-server
-sudo apt install php_mysql phpunit php-intl php-curl php-zip php-mbstring php-gd php-soap php-xml php-xmlrpc
+sudo apt install -y php_mysql phpunit php-intl php-curl php-zip php-mbstring php-gd php-soap php-xml php-xmlrpc
 sudo systemctl restart php7.3-fpm.service
+sudo apt install -y tmux
 
 wget -O /tmp/composer-setup.php https://getcomposer.org/installer
 sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 #sudo composer self-update  
 
 sudo apt -t buster-backports install -y nodejs npm
+
+# Installing LaTeX
+# sudo apt install -y texlive texlive-latex-base texlive-latex-extra
+# sudo apt install -y texlive-extra-utils texlive-fonts-extra
+# sudo apt install -y texlive-lang-english texlive-lang-cyrillic
 
 
 read -p "Do you want to install termite? " -n 1 -r

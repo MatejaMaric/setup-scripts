@@ -49,6 +49,7 @@ sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
 sudo systemctl disable --now mpd
 
 sudo apt -t buster-backports install -y youtube-dl
+sudo apt install -y unrar-free
 
 
 read -p "Do you want to install configurations? " -n 1 -r

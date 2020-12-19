@@ -1,7 +1,72 @@
 #!/bin/bash
-# I need to add option to install nvidia drivers
 
+qtile_install=false;
+config_install=false;
+termite_install=false;
+neovim_install=false;
+latex_install=false;
+nvidia_install=false;
+
+read -p "Do you want to install Qtile? " -n 1 -r
+echo
+[[ $REPLY =~ ^[Yy]$ ]] && $qtile_install=true;
+
+read -p "Do you want to install configurations? " -n 1 -r
+echo
+[[ $REPLY =~ ^[Yy]$ ]] && $config_install=true;
+
+read -p "Do you want to install termite? " -n 1 -r
+echo
+[[ $REPLY =~ ^[Yy]$ ]] && $termite_install=true;
+
+read -p "Do you want to install Neovim? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]] && $neovim_install=true;
+
+read -p "Do you want to install LaTeX? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]] && $latex_install=true;
+
+read -p "Do you want to install proprietary nvidia drivers? " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]] && $nvidia_install=true;
+
+# Adding non-free repos if necessary.
+if [[ $nvidia_install ]]
+then
+cat > /tmp/sources.list <<EOF
+deb http://deb.debian.org/debian/ buster main contrib non-free
+deb-src http://deb.debian.org/debian/ buster main contrib non-free
+
+deb http://security.debian.org/debian-security buster/updates main contrib non-free
+deb-src http://security.debian.org/debian-security buster/updates main contrib non-free
+
+deb http://deb.debian.org/debian/ buster-updates main contrib non-free
+deb-src http://deb.debian.org/debian/ buster-updates main contrib non-free
+
+deb http://deb.debian.org/debian/ buster-backports main
+deb-src http://deb.debian.org/debian/ unstable main contrib non-free
+EOF
+
+else
+cat > /tmp/sources.list <<EOF
+deb http://deb.debian.org/debian/ buster main
+deb-src http://deb.debian.org/debian/ buster main
+
+deb http://security.debian.org/debian-security buster/updates main
+deb-src http://security.debian.org/debian-security buster/updates main
+
+deb http://deb.debian.org/debian/ buster-updates main
+deb-src http://deb.debian.org/debian/ buster-updates main
+
+deb http://deb.debian.org/debian/ buster-backports main
+deb-src http://deb.debian.org/debian/ unstable main
+EOF
+fi
+
+sudo cp /tmp/sources.list /etc/apt/sources.list
 sudo apt update
+sudo apt upgrade
 
 echo "Installing basic software..."
 sudo apt install -y gpg git pass build-essential
@@ -10,11 +75,10 @@ sudo apt install -y unzip wget curl
 
 echo "Installing Xorg..."
 sudo apt install -y xorg xorg-drivers xinit xterm
+[[ $nvidia_install ]] && sudo apt install nvidia-driver
 
 
-read -p "Do you want to install Qtile? " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
+if [[ $qtile_install ]]
 then
   echo "Installing Qtile..."
   sudo apt install -y libxcb-render0-dev libffi-dev libcairo2 libpangocairo-1.0-0 python-dbus
@@ -52,9 +116,7 @@ sudo apt -t buster-backports install -y youtube-dl
 sudo apt install -y unrar-free
 
 
-read -p "Do you want to install configurations? " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
+if [[ $config_install ]]
 then
   echo "Installing configurations..."
   git clone https://git.matejamaric.com/dotfiles /tmp/dotfiles
@@ -86,15 +148,16 @@ sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=compose
 
 sudo apt -t buster-backports install -y nodejs npm
 
-# Installing LaTeX
-# sudo apt install -y texlive texlive-latex-base texlive-latex-extra
-# sudo apt install -y texlive-extra-utils texlive-fonts-extra
-# sudo apt install -y texlive-lang-english texlive-lang-cyrillic
+if [[ $latex_install ]]
+then
+  echo "Installing LaTeX.."
+  sudo apt install -y texlive texlive-latex-base texlive-latex-extra
+  sudo apt install -y texlive-extra-utils texlive-fonts-extra
+  sudo apt install -y texlive-lang-english texlive-lang-cyrillic
+fi
 
 
-read -p "Do you want to install termite? " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
+if [[ $termite_install ]]
 then
   [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
   cd $HOME/programs
@@ -119,9 +182,7 @@ then
 fi
 
 
-read -p "Do you want to install Neovim? " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
+if [[ $neovim_install ]]
 then
   [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
   cd $HOME/programs

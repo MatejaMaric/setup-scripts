@@ -5,6 +5,7 @@ config_install=false;
 termite_install=false;
 neovim_install=false;
 latex_install=false;
+non_free=false;
 nvidia_install=false;
 
 read -p "Do you want to install Qtile? " -n 1 -r
@@ -21,18 +22,25 @@ echo
 
 read -p "Do you want to install Neovim? " -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]] && $neovim_install=true;
+[[ $REPLY =~ ^[Yy]$ ]] && $neovim_install=true;
 
 read -p "Do you want to install LaTeX? " -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]] && $latex_install=true;
+[[ $REPLY =~ ^[Yy]$ ]] && $latex_install=true;
 
+read -p "Do you want to enable non-free repos?" -n 1 -r
+echo
+[[ $REPLY =~ ^[Yy]$ ]] && $non_free=true;
+
+if [[ $non_free ]]
+then
 read -p "Do you want to install proprietary nvidia drivers? " -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]] && $nvidia_install=true;
+[[ $REPLY =~ ^[Yy]$ ]] && $nvidia_install=true;
+fi
 
 # Adding non-free repos if necessary.
-if [[ $nvidia_install ]]
+if [[ $non_free ]]
 then
 cat > /tmp/sources.list <<EOF
 deb http://deb.debian.org/debian/ buster main contrib non-free

@@ -77,7 +77,7 @@ sudo apt update
 sudo apt upgrade
 
 echo "Installing basic software..."
-sudo apt install -y gpg git pass build-essential
+sudo apt install -y gpg keychain git pass build-essential
 sudo apt install -y unzip wget curl
 
 
@@ -92,9 +92,15 @@ then
   sudo apt install -y libxcb-render0-dev libffi-dev libcairo2 libpangocairo-1.0-0 python-dbus
   sudo apt install -y python3-pip
 
-  pip3 install xcffib
-  pip3 install --no-cache-dir cairocffi
-  pip3 install qtile
+  [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
+  cd $HOME/programs
+
+  git clone https://github.com/qtile/qtile
+  cd qtile
+
+  pip3 install -r requirements.txt
+  pip3 install .
+
 
 cat > /tmp/qtile.desktop <<EOF
 [Desktop Entry]

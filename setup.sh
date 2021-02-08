@@ -140,13 +140,13 @@ then
 
   cp /tmp/dotfiles/.vimrc $HOME
   cp /tmp/dotfiles/.Xdefaults $HOME
+  cp -r /tmp/dotfiles/.xprofile $HOME
   cp -r /tmp/dotfiles/.xmonad $HOME
 
   cp -r /tmp/dotfiles/.config $HOME
   sed -i "s/your-user-name/$USER/" $HOME/.config/nvim/coc-settings.json
 
-  [[ ! -d $HOME/stuff ]] && mkdir $HOME/stuff
-  cp -r /tmp/dotfiles/scripts $HOME/stuff
+  cp -r /tmp/dotfiles/.local/bin $HOME/.local/
 fi
 
 

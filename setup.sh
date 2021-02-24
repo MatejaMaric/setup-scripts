@@ -82,7 +82,7 @@ sudo apt install -y unzip wget curl
 
 
 echo "Installing Xorg..."
-sudo apt install -y xorg xorg-drivers xinit xterm
+sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2
 [[ $nvidia_install ]] && sudo apt install nvidia-driver
 
 

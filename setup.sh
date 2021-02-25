@@ -7,6 +7,7 @@ neovim_install=false;
 latex_install=false;
 non_free=false;
 nvidia_install=false;
+aerc_install=false;
 
 read -p "Do you want to install Qtile? " -n 1 -r
 echo
@@ -38,6 +39,10 @@ read -p "Do you want to install proprietary nvidia drivers? " -n 1 -r
 echo
 [[ $REPLY =~ ^[Yy]$ ]] && $nvidia_install=true;
 fi
+
+read -p "Do you want to install Aerc? " -n 1 -r
+echo
+[[ $REPLY =~ ^[Yy]$ ]] && $aerc_install=true;
 
 # Adding non-free repos if necessary.
 if [[ $non_free ]]
@@ -222,4 +227,15 @@ then
   git clone https://github.com/phpactor/phpactor
   cd phpactor
   composer install
+fi
+
+
+if [[ $aerc_install ]]
+then
+  echo "Installing Aerc.."
+  sudo apt install -t buster-backports -y golang scdoc
+  git clone https://git.sr.ht/~sircmpwn/aerc
+  cd aerc && git checkout tags/0.5.2
+  make
+  sudo make install
 fi

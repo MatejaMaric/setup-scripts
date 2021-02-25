@@ -233,7 +233,7 @@ fi
 if [[ $aerc_install ]]
 then
   echo "Installing Aerc.."
-  sudo apt install -t buster-backports -y golang scdoc
+  sudo apt install -t buster-backports -y golang scdoc isync
   git clone https://git.sr.ht/~sircmpwn/aerc
   cd aerc && git checkout tags/0.5.2
   make

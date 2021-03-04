@@ -222,6 +222,9 @@ then
   pip3 install pynvim
   sudo npm install -g neovim
 
+  # Adding shared clipboard support.
+  sudo apt install -y xsel
+
   echo "Installing phpactor..."
   cd $HOME/programs
   git clone https://github.com/phpactor/phpactor

@@ -165,7 +165,9 @@ wget -O /tmp/composer-setup.php https://getcomposer.org/installer
 sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 #sudo composer self-update  
 
-sudo apt -t buster-backports install -y nodejs npm
+#sudo apt -t buster-backports install -y nodejs npm
+curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 if [[ $latex_install ]]
 then

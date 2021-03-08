@@ -81,14 +81,42 @@ sudo cp /tmp/sources.list /etc/apt/sources.list
 sudo apt update
 sudo apt upgrade
 
-echo "Installing basic software..."
+
+echo "Installing basic cli software..."
 sudo apt install -y gpg keychain git pass build-essential
-sudo apt install -y unzip wget curl
+sudo apt install -y unzip wget curl rsync dnsutils tmux
 
 
 echo "Installing Xorg..."
 sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2
 [[ $nvidia_install ]] && sudo apt install nvidia-driver
+
+
+echo "Installing additional software for desktop usage..."
+sudo apt install -y numlockx pcmanfm
+sudo apt install -y dunst libnotify-bin udiskie
+sudo apt install -y feh suckless-tools rofi scrot irssi
+sudo apt install -y thunderbird libreoffice
+sudo apt install -y zathura zathura-pdf-poppler
+sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
+sudo systemctl disable --now mpd
+
+sudo apt -t buster-backports install -y youtube-dl
+sudo apt install -y unrar-free
+
+
+echo "Installing work software..."
+sudo apt install -y nginx php-fpm mariadb-server
+sudo apt install -y php_mysql phpunit php-intl php-curl php-zip php-mbstring php-gd php-soap php-xml php-xmlrpc
+sudo systemctl restart php7.3-fpm.service
+
+wget -O /tmp/composer-setup.php https://getcomposer.org/installer
+sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+#sudo composer self-update
+
+#sudo apt -t buster-backports install -y nodejs npm
+curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
 
 if [[ $qtile_install ]]
@@ -122,19 +150,6 @@ EOF
 fi
 
 
-echo "Installing additional software..."
-sudo apt install -y numlockx pcmanfm
-sudo apt install -y dunst libnotify-bin udiskie rsync dnsutils
-sudo apt install -y feh suckless-tools rofi scrot irssi
-sudo apt install -y thunderbird libreoffice
-sudo apt install -y zathura zathura-pdf-poppler
-sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
-sudo systemctl disable --now mpd
-
-sudo apt -t buster-backports install -y youtube-dl
-sudo apt install -y unrar-free
-
-
 if [[ $config_install ]]
 then
   echo "Installing configurations..."
@@ -154,20 +169,6 @@ then
   cp -r /tmp/dotfiles/.local/bin $HOME/.local/
 fi
 
-
-echo "Installing work software..."
-sudo apt install -y nginx php-fpm mariadb-server
-sudo apt install -y php_mysql phpunit php-intl php-curl php-zip php-mbstring php-gd php-soap php-xml php-xmlrpc
-sudo systemctl restart php7.3-fpm.service
-sudo apt install -y tmux
-
-wget -O /tmp/composer-setup.php https://getcomposer.org/installer
-sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
-#sudo composer self-update  
-
-#sudo apt -t buster-backports install -y nodejs npm
-curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-sudo apt-get install -y nodejs
 
 if [[ $latex_install ]]
 then

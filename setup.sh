@@ -115,8 +115,13 @@ wget -O /tmp/composer-setup.php https://getcomposer.org/installer
 sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 #sudo composer self-update
 
-#sudo apt -t buster-backports install -y nodejs npm
-curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+#curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+VERSION=node_14.x
+DISTRO="$(lsb_release -s -c)"
+echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+sudo apt-get update
 sudo apt-get install -y nodejs
 
 

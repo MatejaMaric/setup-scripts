@@ -124,6 +124,8 @@ echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /e
 sudo apt-get update
 sudo apt-get install -y nodejs
 
+sudo apt -t buster-backports install -y hugo
+
 
 if [[ $qtile_install ]]
 then

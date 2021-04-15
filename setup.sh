@@ -93,6 +93,7 @@ sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2
 
 
 echo "Installing additional software for desktop usage..."
+sudo apt install -y fonts-dejavu fonts-firacode
 sudo apt install -y numlockx pcmanfm
 sudo apt install -y dunst libnotify-bin udiskie
 sudo apt install -y feh suckless-tools rofi scrot irssi

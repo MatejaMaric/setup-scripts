@@ -1,12 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 qtile_install=false;
-config_install=false;
 termite_install=false;
+
+st_install=false;
+
+config_install=false;
 neovim_install=false;
 latex_install=false;
 non_free=false;
 nvidia_install=false;
+
 aerc_install=false;
 
 read -p "Do you want to install Qtile? " -n 1 -r
@@ -20,6 +24,10 @@ echo
 read -p "Do you want to install termite? " -n 1 -r
 echo
 [[ $REPLY =~ ^[Yy]$ ]] && $termite_install=true;
+
+read -p "Do you want to install my st fork? " -n 1 -r
+echo
+[[ $REPLY =~ ^[Yy]$ ]] && $st_install=true;
 
 read -p "Do you want to install Neovim? " -n 1 -r
 echo
@@ -87,8 +95,8 @@ sudo apt install -y gpg keychain git pass build-essential
 sudo apt install -y unzip wget curl rsync dnsutils tmux
 
 
-echo "Installing Xorg..."
-sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2
+echo "Installing Xorg and AwesomeWM..."
+sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2 awesome
 [[ $nvidia_install ]] && sudo apt install nvidia-driver
 
 
@@ -180,6 +188,15 @@ then
   sed -i "s/your-user-name/$USER/" $HOME/.config/nvim/coc-settings.json
 
   cp -r /tmp/dotfiles/.local/bin $HOME/.local/
+fi
+
+if [[ $st_install ]]
+then
+  echo "Installing my st fork..."
+  git clone https://git.matejamaric.com/st /tmp/st
+  cd /tmp/st
+  make
+  sudo make install
 fi
 
 

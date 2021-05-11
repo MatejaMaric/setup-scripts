@@ -167,8 +167,13 @@ then
   cp /tmp/dotfiles/.dir_colors $HOME
 
   cp /tmp/dotfiles/.vimrc $HOME
+  cp /tmp/dotfiles/.tmux.conf $HOME
+  cp /tmp/dotfiles/.gnupg/gpg-agent.conf $HOME/.gnupg/
+
   cp /tmp/dotfiles/.Xdefaults $HOME
-  cp -r /tmp/dotfiles/.xprofile $HOME
+  cp /tmp/dotfiles/.xprofile $HOME
+  cp /tmp/dotfiles/.xinit $HOME
+
   cp -r /tmp/dotfiles/.xmonad $HOME
 
   cp -r /tmp/dotfiles/.config $HOME

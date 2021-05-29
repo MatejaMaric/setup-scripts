@@ -1,59 +1,17 @@
 #!/usr/bin/env bash
 
-qtile_install=false;
-termite_install=false;
-
-st_install=false;
-
-config_install=false;
-neovim_install=false;
-latex_install=false;
-non_free=false;
-nvidia_install=false;
-
-aerc_install=false;
-
-read -p "Do you want to install Qtile? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $qtile_install=true;
-
-read -p "Do you want to install configurations? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $config_install=true;
-
-read -p "Do you want to install termite? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $termite_install=true;
-
-read -p "Do you want to install my st fork? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $st_install=true;
-
-read -p "Do you want to install Neovim? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $neovim_install=true;
-
-read -p "Do you want to install LaTeX? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $latex_install=true;
-
-read -p "Do you want to enable non-free repos?" -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $non_free=true;
-
-if [[ $non_free ]]
-then
-read -p "Do you want to install proprietary nvidia drivers? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $nvidia_install=true;
-fi
-
-read -p "Do you want to install Aerc? " -n 1 -r
-echo
-[[ $REPLY =~ ^[Yy]$ ]] && $aerc_install=true;
+read -p "Do you want to install Qtile? [y/n]: " qtile_install
+read -p "Do you want to install configurations? [y/n]: " config_install
+read -p "Do you want to install termite? [y/n]: " termite_install
+read -p "Do you want to install my st fork? [y/n]: " st_install
+read -p "Do you want to install Neovim? [y/n]: " neovim_install
+read -p "Do you want to install LaTeX? [y/n]: " latex_install
+read -p "Do you want to enable non-free repos? [y/n]:" non_free
+[[ $non_free =~ ^[Yy]$ ]] && read -p "Do you want to install proprietary nvidia drivers? [y/n]: " nvidia_install
+read -p "Do you want to install Aerc? [y/n]: " aerc_install
 
 # Adding non-free repos if necessary.
-if [[ $non_free ]]
+if [[ $non_free =~ ^[Yy]$ ]]
 then
 cat > /tmp/sources.list <<EOF
 deb http://deb.debian.org/debian/ buster main contrib non-free
@@ -97,7 +55,7 @@ sudo apt install -y unzip wget curl rsync dnsutils tmux
 
 echo "Installing Xorg and AwesomeWM..."
 sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2 awesome
-[[ $nvidia_install ]] && sudo apt install nvidia-driver
+[[ $nvidia_install =~ ^[Yy]$ ]] && sudo apt install nvidia-driver
 
 
 echo "Installing additional software for desktop usage..."
@@ -135,7 +93,7 @@ sudo apt-get install -y nodejs
 sudo apt -t buster-backports install -y hugo
 
 
-if [[ $qtile_install ]]
+if [[ $qtile_install =~ ^[Yy]$ ]]
 then
   echo "Installing Qtile..."
   sudo apt install -y libxcb-render0-dev libffi-dev libcairo2 libpangocairo-1.0-0 python-dbus
@@ -166,7 +124,7 @@ EOF
 fi
 
 
-if [[ $config_install ]]
+if [[ $config_install =~ ^[Yy]$ ]]
 then
   echo "Installing configurations..."
   git clone https://git.matejamaric.com/dotfiles /tmp/dotfiles
@@ -190,7 +148,7 @@ then
   cp -r /tmp/dotfiles/.local/bin $HOME/.local/
 fi
 
-if [[ $st_install ]]
+if [[ $st_install =~ ^[Yy]$ ]]
 then
   echo "Installing my st fork..."
   git clone https://git.matejamaric.com/st /tmp/st
@@ -200,7 +158,7 @@ then
 fi
 
 
-if [[ $latex_install ]]
+if [[ $latex_install =~ ^[Yy]$ ]]
 then
   echo "Installing LaTeX.."
   sudo apt install -y texlive texlive-latex-base texlive-latex-extra
@@ -209,7 +167,7 @@ then
 fi
 
 
-if [[ $termite_install ]]
+if [[ $termite_install =~ ^[Yy]$ ]]
 then
   [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
   cd $HOME/programs
@@ -234,7 +192,7 @@ then
 fi
 
 
-if [[ $neovim_install ]]
+if [[ $neovim_install =~ ^[Yy]$ ]]
 then
   [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
   cd $HOME/programs
@@ -266,7 +224,7 @@ then
 fi
 
 
-if [[ $aerc_install ]]
+if [[ $aerc_install =~ ^[Yy]$ ]]
 then
   echo "Installing Aerc.."
   sudo apt install -t buster-backports -y golang scdoc

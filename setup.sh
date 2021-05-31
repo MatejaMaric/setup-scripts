@@ -18,6 +18,8 @@ read -p "Do you want to install Aerc? [y/n]: " aerc_install
 read -p "Do you want to install Qtile? [y/n]: " qtile_install
 read -p "Do you want to install termite? [y/n]: " termite_install
 
+####################################################################################################
+
 # Adding non-free repos if necessary.
 if [[ $non_free =~ ^[Yy]$ ]]
 then
@@ -77,6 +79,82 @@ sudo apt install -y zathura zathura-pdf-poppler
 sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
 sudo systemctl disable --now mpd
 sudo apt -t buster-backports install -y youtube-dl
+
+####################################################################################################
+
+if [[ $config_install =~ ^[Yy]$ ]]
+then
+  echo "Installing configurations..."
+  git clone https://git.matejamaric.com/dotfiles /tmp/dotfiles
+
+  cp /tmp/dotfiles/.bash* $HOME
+  cp /tmp/dotfiles/.dir_colors $HOME
+
+  cp /tmp/dotfiles/.vimrc $HOME
+  cp /tmp/dotfiles/.tmux.conf $HOME
+  cp /tmp/dotfiles/.gnupg/gpg-agent.conf $HOME/.gnupg/
+
+  cp /tmp/dotfiles/.Xdefaults $HOME
+  cp /tmp/dotfiles/.xprofile $HOME
+  cp /tmp/dotfiles/.xinit $HOME
+
+  cp -r /tmp/dotfiles/.xmonad $HOME
+
+  cp -r /tmp/dotfiles/.config $HOME
+  sed -i "s/your-user-name/$USER/" $HOME/.config/nvim/coc-settings.json
+
+  cp -r /tmp/dotfiles/.local/bin $HOME/.local/
+fi
+
+if [[ $st_install =~ ^[Yy]$ ]]
+then
+  echo "Installing my st fork..."
+  git clone https://git.matejamaric.com/st /tmp/st
+  cd /tmp/st
+  make
+  sudo make install
+fi
+
+
+if [[ $neovim_install =~ ^[Yy]$ ]]
+then
+  [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
+  cd $HOME/programs
+
+  echo "Build dependencies..."
+  sudo apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
+  echo "NeoVim dependencies..."
+  sudo apt install -y gperf libluajit-5.1-dev libunibilium-dev libmsgpack-dev libtermkey-dev libvterm-dev libjemalloc-dev lua5.1 lua-lpeg lua-mpack lua-bitop
+
+  echo "NeoVim repo..."
+  [[ ! -d neovim ]] && git clone https://github.com/neovim/neovim
+
+  echo "NeoVim compile and install..."
+  cd neovim
+  make CMAKE_BUILD_TYPE=Release
+  sudo make install
+
+  pip3 install pynvim
+  sudo npm install -g neovim
+
+  # Adding shared clipboard support.
+  sudo apt install -y xsel
+
+  echo "Installing phpactor..."
+  cd $HOME/programs
+  git clone https://github.com/phpactor/phpactor
+  cd phpactor
+  composer install
+fi
+
+
+if [[ $latex_install =~ ^[Yy]$ ]]
+then
+  echo "Installing LaTeX.."
+  sudo apt install -y texlive texlive-latex-base texlive-latex-extra
+  sudo apt install -y texlive-extra-utils texlive-fonts-extra
+  sudo apt install -y texlive-lang-english texlive-lang-cyrillic
+fi
 
 ####################################################################################################
 
@@ -156,49 +234,6 @@ EOF
 fi
 
 
-if [[ $config_install =~ ^[Yy]$ ]]
-then
-  echo "Installing configurations..."
-  git clone https://git.matejamaric.com/dotfiles /tmp/dotfiles
-
-  cp /tmp/dotfiles/.bash* $HOME
-  cp /tmp/dotfiles/.dir_colors $HOME
-
-  cp /tmp/dotfiles/.vimrc $HOME
-  cp /tmp/dotfiles/.tmux.conf $HOME
-  cp /tmp/dotfiles/.gnupg/gpg-agent.conf $HOME/.gnupg/
-
-  cp /tmp/dotfiles/.Xdefaults $HOME
-  cp /tmp/dotfiles/.xprofile $HOME
-  cp /tmp/dotfiles/.xinit $HOME
-
-  cp -r /tmp/dotfiles/.xmonad $HOME
-
-  cp -r /tmp/dotfiles/.config $HOME
-  sed -i "s/your-user-name/$USER/" $HOME/.config/nvim/coc-settings.json
-
-  cp -r /tmp/dotfiles/.local/bin $HOME/.local/
-fi
-
-if [[ $st_install =~ ^[Yy]$ ]]
-then
-  echo "Installing my st fork..."
-  git clone https://git.matejamaric.com/st /tmp/st
-  cd /tmp/st
-  make
-  sudo make install
-fi
-
-
-if [[ $latex_install =~ ^[Yy]$ ]]
-then
-  echo "Installing LaTeX.."
-  sudo apt install -y texlive texlive-latex-base texlive-latex-extra
-  sudo apt install -y texlive-extra-utils texlive-fonts-extra
-  sudo apt install -y texlive-lang-english texlive-lang-cyrillic
-fi
-
-
 if [[ $termite_install =~ ^[Yy]$ ]]
 then
   [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
@@ -221,38 +256,6 @@ then
   echo "Installing termite terminfo..."
   sudo mkdir -p /lib/terminfo/x
   sudo ln -s /usr/local/share/terminfo/x/xterm-termite /lib/terminfo/x/xterm-termite
-fi
-
-
-if [[ $neovim_install =~ ^[Yy]$ ]]
-then
-  [[ ! -d $HOME/programs ]] && mkdir $HOME/programs
-  cd $HOME/programs
-
-  echo "Build dependencies..."
-  sudo apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
-  echo "NeoVim dependencies..."
-  sudo apt install -y gperf libluajit-5.1-dev libunibilium-dev libmsgpack-dev libtermkey-dev libvterm-dev libjemalloc-dev lua5.1 lua-lpeg lua-mpack lua-bitop
-
-  echo "NeoVim repo..."
-  [[ ! -d neovim ]] && git clone https://github.com/neovim/neovim
-
-  echo "NeoVim compile and install..."
-  cd neovim
-  make CMAKE_BUILD_TYPE=Release
-  sudo make install
-
-  pip3 install pynvim
-  sudo npm install -g neovim
-
-  # Adding shared clipboard support.
-  sudo apt install -y xsel
-
-  echo "Installing phpactor..."
-  cd $HOME/programs
-  git clone https://github.com/phpactor/phpactor
-  cd phpactor
-  composer install
 fi
 
 

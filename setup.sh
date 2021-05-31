@@ -13,6 +13,7 @@ read -p "Do you want to install Nginx? [y/n]: " nginx_install
 read -p "Do you want to install MariaDB? [y/n]: " mariadb_install
 read -p "Do you want to install PHP and Composer? [y/n]: " php_install
 read -p "Do you want to install Node.js? [y/n]: " node_install
+read -p "Do you want to install MongoDB? [y/n]: " mongodb_install
 read -p "Do you want to install Hugo? [y/n]: " hugo_install
 
 read -p "Do you want to install Aerc? [y/n]: " aerc_install
@@ -200,6 +201,16 @@ then
   echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
   sudo apt-get update
   sudo apt-get install -y nodejs
+fi
+
+if [[ $mongodb_install =~ ^[Yy]$ ]]
+then
+  echo "Installing MongoDB..."
+  wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+  echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+  sudo apt update
+  sudo apt install -y mongodb-org
+  sudo systemctl enable --now mongod
 fi
 
 if [[ $hugo_install =~ ^[Yy]$ ]]

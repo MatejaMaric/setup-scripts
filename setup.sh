@@ -1,14 +1,22 @@
 #!/usr/bin/env bash
 
-read -p "Do you want to install Qtile? [y/n]: " qtile_install
 read -p "Do you want to install configurations? [y/n]: " config_install
-read -p "Do you want to install termite? [y/n]: " termite_install
 read -p "Do you want to install my st fork? [y/n]: " st_install
 read -p "Do you want to install Neovim? [y/n]: " neovim_install
 read -p "Do you want to install LaTeX? [y/n]: " latex_install
+
+read -p "Do you want to install Nginx? [y/n]: " nginx_install
+read -p "Do you want to install MariaDB? [y/n]: " mariadb_install
+read -p "Do you want to install PHP and Composer? [y/n]: " php_install
+read -p "Do you want to install Node.js? [y/n]: " node_install
+read -p "Do you want to install Hugo? [y/n]: " hugo_install
+
 read -p "Do you want to enable non-free repos? [y/n]:" non_free
 [[ $non_free =~ ^[Yy]$ ]] && read -p "Do you want to install proprietary nvidia drivers? [y/n]: " nvidia_install
+
 read -p "Do you want to install Aerc? [y/n]: " aerc_install
+read -p "Do you want to install Qtile? [y/n]: " qtile_install
+read -p "Do you want to install termite? [y/n]: " termite_install
 
 # Adding non-free repos if necessary.
 if [[ $non_free =~ ^[Yy]$ ]]
@@ -51,9 +59,10 @@ sudo apt upgrade
 echo "Installing basic cli software..."
 sudo apt install -y gpg keychain git pass build-essential
 sudo apt install -y unzip wget curl rsync dnsutils tmux
+sudo apt install -y unrar-free
 
 
-echo "Installing Xorg and AwesomeWM..."
+echo "Installing Xorg, AwesomeWM, drivers..."
 sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2 awesome
 [[ $nvidia_install =~ ^[Yy]$ ]] && sudo apt install nvidia-driver
 
@@ -67,31 +76,54 @@ sudo apt install -y thunderbird libreoffice
 sudo apt install -y zathura zathura-pdf-poppler
 sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
 sudo systemctl disable --now mpd
-
 sudo apt -t buster-backports install -y youtube-dl
-sudo apt install -y unrar-free
 
+####################################################################################################
 
-echo "Installing work software..."
-sudo apt install -y nginx php-fpm mariadb-server
-sudo apt install -y php_mysql phpunit php-intl php-curl php-zip php-mbstring php-gd php-soap php-xml php-xmlrpc
-sudo systemctl restart php7.3-fpm.service
+if [[ $nginx_install =~ ^[Yy]$ ]]
+then
+  echo "Installing Nginx..."
+  sudo apt install -y nginx
+fi
 
-wget -O /tmp/composer-setup.php https://getcomposer.org/installer
-sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
-#sudo composer self-update
+if [[ $mariadb_install =~ ^[Yy]$ ]]
+then
+  echo "Installing MariaDB..."
+  sudo apt install -y mariadb-server
+fi
 
-#curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-VERSION=node_14.x
-DISTRO="$(lsb_release -s -c)"
-echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-sudo apt-get update
-sudo apt-get install -y nodejs
+if [[ $php_install =~ ^[Yy]$ ]]
+then
+  echo "Installing PHP and Composer stack..."
+  sudo apt install -y php-fpm
+  sudo apt install -y php_mysql phpunit php-intl php-curl php-zip php-mbstring php-gd php-soap php-xml php-xmlrpc
+  sudo systemctl restart php7.3-fpm.service
 
-sudo apt -t buster-backports install -y hugo
+  wget -O /tmp/composer-setup.php https://getcomposer.org/installer
+  sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+  #sudo composer self-update
+fi
 
+if [[ $node_install =~ ^[Yy]$ ]]
+then
+  echo "Installing Node.js..."
+  #curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+  wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+  VERSION=node_14.x
+  DISTRO="$(lsb_release -s -c)"
+  echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+  echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+  sudo apt-get update
+  sudo apt-get install -y nodejs
+fi
+
+if [[ $hugo_install =~ ^[Yy]$ ]]
+then
+  echo "Installing Hugo..."
+  sudo apt -t buster-backports install -y hugo
+fi
+
+####################################################################################################
 
 if [[ $qtile_install =~ ^[Yy]$ ]]
 then

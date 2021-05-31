@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+read -p "Do you want to enable non-free repos? [y/n]:" non_free
+[[ $non_free =~ ^[Yy]$ ]] && read -p "Do you want to install proprietary nvidia drivers? [y/n]: " nvidia_install
+
 read -p "Do you want to install configurations? [y/n]: " config_install
+read -p "Do you want to install my desktop environment? [y/n]: " desktop_install
 read -p "Do you want to install my st fork? [y/n]: " st_install
 read -p "Do you want to install Neovim? [y/n]: " neovim_install
 read -p "Do you want to install LaTeX? [y/n]: " latex_install
@@ -10,9 +14,6 @@ read -p "Do you want to install MariaDB? [y/n]: " mariadb_install
 read -p "Do you want to install PHP and Composer? [y/n]: " php_install
 read -p "Do you want to install Node.js? [y/n]: " node_install
 read -p "Do you want to install Hugo? [y/n]: " hugo_install
-
-read -p "Do you want to enable non-free repos? [y/n]:" non_free
-[[ $non_free =~ ^[Yy]$ ]] && read -p "Do you want to install proprietary nvidia drivers? [y/n]: " nvidia_install
 
 read -p "Do you want to install Aerc? [y/n]: " aerc_install
 read -p "Do you want to install Qtile? [y/n]: " qtile_install
@@ -53,32 +54,21 @@ deb-src http://deb.debian.org/debian/ unstable main
 EOF
 fi
 
+echo "Updating system..."
 sudo cp /tmp/sources.list /etc/apt/sources.list
 sudo apt update
 sudo apt upgrade
-
 
 echo "Installing basic cli software..."
 sudo apt install -y gpg keychain git pass build-essential
 sudo apt install -y unzip wget curl rsync dnsutils tmux
 sudo apt install -y unrar-free
 
-
-echo "Installing Xorg, AwesomeWM, drivers..."
-sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2 awesome
-[[ $nvidia_install =~ ^[Yy]$ ]] && sudo apt install nvidia-driver
-
-
-echo "Installing additional software for desktop usage..."
-sudo apt install -y fonts-dejavu fonts-firacode
-sudo apt install -y numlockx pcmanfm
-sudo apt install -y dunst libnotify-bin udiskie
-sudo apt install -y feh suckless-tools rofi scrot irssi
-sudo apt install -y thunderbird libreoffice
-sudo apt install -y zathura zathura-pdf-poppler
-sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
-sudo systemctl disable --now mpd
-sudo apt -t buster-backports install -y youtube-dl
+if [[ $nvidia_install =~ ^[Yy]$ ]]
+then
+  echo "Installing proprietary nvidia drivers..."
+  sudo apt install nvidia-driver
+fi
 
 ####################################################################################################
 
@@ -104,6 +94,23 @@ then
   sed -i "s/your-user-name/$USER/" $HOME/.config/nvim/coc-settings.json
 
   cp -r /tmp/dotfiles/.local/bin $HOME/.local/
+fi
+
+if [[ $desktop_install =~ ^[Yy]$ ]]
+then
+  echo "Installing Xorg, AwesomeWM, utilities..."
+  sudo apt install -y xorg xorg-drivers xinit xterm pinentry-gtk-2 awesome
+
+  echo "Installing additional software for desktop usage..."
+  sudo apt install -y fonts-dejavu fonts-firacode
+  sudo apt install -y numlockx pcmanfm
+  sudo apt install -y dunst libnotify-bin udiskie
+  sudo apt install -y feh suckless-tools rofi scrot irssi
+  sudo apt install -y thunderbird libreoffice
+  sudo apt install -y zathura zathura-pdf-poppler
+  sudo apt install -y newsboat ffmpeg mpd mpc ncmpcpp mpv
+  sudo systemctl disable --now mpd
+  sudo apt -t buster-backports install -y youtube-dl
 fi
 
 if [[ $st_install =~ ^[Yy]$ ]]

@@ -14,6 +14,7 @@ read -p "Do you want to install MariaDB? [y/n]: " mariadb_install
 read -p "Do you want to install PHP and Composer? [y/n]: " php_install
 read -p "Do you want to install Node.js? [y/n]: " node_install
 read -p "Do you want to install MongoDB? [y/n]: " mongodb_install
+read -p "Do you want to install Docker? [y/n]: " docker_install
 read -p "Do you want to install Hugo? [y/n]: " hugo_install
 
 read -p "Do you want to install Aerc? [y/n]: " aerc_install
@@ -63,6 +64,7 @@ sudo apt upgrade
 echo "Installing basic cli software..."
 sudo apt install -y gpg keychain git pass build-essential
 sudo apt install -y unzip wget curl rsync dnsutils tmux
+sudo apt install -y apt-transport-https ca-certificates gnupg lsb-release
 sudo apt install -y unrar-free
 
 if [[ $nvidia_install =~ ^[Yy]$ ]]
@@ -211,6 +213,17 @@ then
   sudo apt update
   sudo apt install -y mongodb-org
   sudo systemctl enable --now mongod
+fi
+
+if [[ $docker_install =~ ^[Yy]$ ]]
+then
+  echo "Installing Docker..."
+  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  echo \
+      "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt update
+  sudo apt install -y docker-ce docker-ce-cli containerd.io
 fi
 
 if [[ $hugo_install =~ ^[Yy]$ ]]
